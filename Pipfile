@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pillow = "*"
+numpy = "*"
+matplotlib = "*"
+pandas = "*"
+pyqt6 = "*"
+torch = "*"
+opencv-contrib-python = "*"
+scikit-image = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

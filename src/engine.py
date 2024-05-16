@@ -8,7 +8,7 @@ import numpy as np
 import cv2 as cv
 from itertools import combinations
 
-from models import get_graph
+from models import get_graph, classificator
 
 class Engine:
     def __refresher__(clear_thinning=True):
@@ -247,7 +247,6 @@ class Engine:
             # save the only largest skeleton
             _, labels, _, _ = cv.connectedComponentsWithStats(temp)
             largest_component = np.argmax(np.unique(labels, return_counts=True)[1][1:]) + 1
-            print(largest_component)
             deletion_mask = labels == largest_component
             temp *= deletion_mask
 
@@ -256,6 +255,8 @@ class Engine:
         if self.actions['thinning'] and self.actions['postproccess']:
             Matrix = np.array(temp).astype(np.uint8)
             result_canvas, connectivity = get_graph(Matrix.copy())
+
+            classificator(connectivity)
 
             temp = Image.fromarray(result_canvas.astype(np.uint8) + Matrix.astype(np.uint8))
 

@@ -55,7 +55,7 @@ def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:
     for center in centroids:
         c = (int(center[0]), int(center[1]))
         points.append(c)
-        cv.circle(point_canvas, c, 20, 255, -1)
+        cv.circle(point_canvas, c, 30, 255, -1)
     points = np.array(points)
 
     connectivity = {}
@@ -68,12 +68,12 @@ def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:
         b = points[b_index]
 
         canvas_without_other_dots = Matrix.copy()
-        cv.circle(canvas_without_other_dots, a, 15, 255, -1)
-        cv.circle(canvas_without_other_dots, b, 15, 255, -1)
+        cv.circle(canvas_without_other_dots, a, 30, 255, -1)
+        cv.circle(canvas_without_other_dots, b, 30, 255, -1)
 
         mask_over_all_other_points = np.zeros_like(Matrix)
         for i in other_indexes:
-            cv.circle(mask_over_all_other_points, points[i], 15, 255, -1)
+            cv.circle(mask_over_all_other_points, points[i], 30, 255, -1)
         canvas_without_other_dots[mask_over_all_other_points > 0] = 0
 
         _, labels, _, _ = cv.connectedComponentsWithStats(canvas_without_other_dots)

@@ -25,7 +25,7 @@ class CVtools(QWidget):
 
             # add kernel size define-slider
             self.slider = QSlider(Qt.Orientation.Horizontal)
-            self.slider.setRange(0, 30)
+            self.slider.setRange(0, 40)
             self.slider.setValue(0)
             self.slider.setFixedSize(QSize(200, 30))
             self.slider.valueChanged.connect(self.func)

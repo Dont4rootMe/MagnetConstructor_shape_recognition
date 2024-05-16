@@ -243,9 +243,17 @@ class Engine:
         if self.actions['thinning']:
             Matrix = np.array(temp).astype(np.uint8)
             temp = cv.ximgproc.thinning(Matrix, thinningType=cv.ximgproc.THINNING_GUOHALL)
+
+            # save the only largest skeleton
+            _, labels, _, _ = cv.connectedComponentsWithStats(temp)
+            largest_component = np.argmax(np.unique(labels, return_counts=True)[1][1:]) + 1
+            print(largest_component)
+            deletion_mask = labels == largest_component
+            temp *= deletion_mask
+
             temp = Image.fromarray(temp.astype(np.uint8))
 
-        if self.actions['postproccess']:
+        if self.actions['thinning'] and self.actions['postproccess']:
             Matrix = np.array(temp).astype(np.uint8)
             result_canvas, connectivity = get_graph(Matrix.copy())
 

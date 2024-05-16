@@ -361,7 +361,7 @@ class Engine:
 
     @__refresher__(False)
     def postproccessing(self, val):
-        self.actions['postproccess'] = True
+        self.actions['postproccess'] = True if self.actions['thinning'] else False
 
 
     @__refresher__(True)

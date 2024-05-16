@@ -40,23 +40,29 @@ class CVtools(QWidget):
         super().__init__(topModel)
         self.engine = engine
 
-        self.erosion_tool  = self.__morph_tool(self, self.engine.erosion_change)
-        self.dilation_tool = self.__morph_tool(self, self.engine.dilation_change)
-        self.opening_tool  = self.__morph_tool(self, self.engine.opening_change)
+        self.opening_before_tool  = self.__morph_tool(self, self.engine.opening_before_change)
+        self.erosion_before_tool  = self.__morph_tool(self, self.engine.erosion_before_change)
         self.closing_tool  = self.__morph_tool(self, self.engine.closing_change)
+        self.dilation_tool = self.__morph_tool(self, self.engine.dilation_change)
+        self.opening_after_tool  = self.__morph_tool(self, self.engine.opening_after_change)
+        self.erosion_after_tool  = self.__morph_tool(self, self.engine.erosion_after_change)
 
         self.layout = QFormLayout()
-        self.layout.addRow('Dilation: ', self.dilation_tool)
+        self.layout.addRow('Opening before: ', self.opening_before_tool)
+        self.layout.addRow('Erosion before: ', self.erosion_before_tool)
         self.layout.addRow('Closing: ', self.closing_tool)
-        self.layout.addRow('Erosion: ', self.erosion_tool)
-        self.layout.addRow('Opening: ', self.opening_tool)
+        self.layout.addRow('Dilation: ', self.dilation_tool)
+        self.layout.addRow('Opening after: ', self.opening_after_tool)
+        self.layout.addRow('Erosion after: ', self.erosion_after_tool)
 
         self.engine.add_reset_action(self.clear_styles)
         self.setLayout(self.layout)
 
     def clear_styles(self):
-        self.erosion_tool.clear_morph()
-        self.dilation_tool.clear_morph()
-        self.opening_tool.clear_morph()
+        self.opening_before_tool.clear_morph()
+        self.erosion_before_tool.clear_morph()
         self.closing_tool.clear_morph()
+        self.dilation_tool.clear_morph()
+        self.opening_after_tool.clear_morph()
+        self.erosion_after_tool.clear_morph()
 

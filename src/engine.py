@@ -89,64 +89,7 @@ class Engine:
 
     def get_original_pixmap(self):
         temp = self.img
-
-        # temp = np.array(temp)
-        # temp = cv.blur(temp, (9,9), 100)
-        # if len(self.kernel) >= 4:
-        #     import os
-        #     file = f'./data/negative{len(os.listdir("./data"))}.npy'
-
-        #     mask = cv.fillPoly(np.zeros((temp.shape[0], temp.shape[1])), [np.array(self.kernel)], 255) > 0
-        #     data = temp[mask].reshape((-1, 3))
-            # for p in points:
-            #     delta = np.linalg.norm(data[:, :3] - p[None, :], axis=-1)
-            #     data = np.concatenate([data, delta[:, None]], axis=-1)
-        #     print(data.shape)
-
-        #     data.dump(file)
-        #     temp[mask] = 0 
-        #     test = np.load(file, allow_pickle=True)
-        #     temp[mask] = test[:, :3] / 2
-        #     self.kernel = []
-
-        #     # temp[mask].reshape((-1, 3)).dump(file)
-        #     # temp[mask] = 0 
-        #     # test = np.load(file, allow_pickle=True)
-        #     # temp[mask] = test / 2
-        #     self.kernel = []
-        # temp = Image.fromarray(temp.astype(np.uint8))
-        # return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
-
-
-#         Matrix = np.array(temp)
-#         Matrix = cv.blur(Matrix, (9,9))
-#         Matrix = cv.resize(Matrix, (0,0), fx=0.4, fy=0.4) 
-
-#         data = Matrix.reshape((-1, 3))
-#         for p in points:
-#             delta = np.linalg.norm(data[:, :3] - p[None, :], axis=-1)
-#             data = np.concatenate([data, delta[:, None]], axis=-1)
-
-#         import torch
-#         model = torch.nn.Sequential(
-#     torch.nn.Linear(39, 60),
-#     torch.nn.ReLU(),
-#     torch.nn.BatchNorm1d(60),
-#     torch.nn.Linear(60, 60),
-#     torch.nn.ReLU(),
-#     torch.nn.BatchNorm1d(60),
-#     torch.nn.Linear(60, 60),
-#     torch.nn.ReLU(),
-#     torch.nn.BatchNorm1d(60),
-#     torch.nn.Linear(60, 60),
-#     torch.nn.ReLU(),
-#     torch.nn.BatchNorm1d(60),
-#     torch.nn.Linear(60, 2)
-# )
-#         model.load_state_dict(torch.load('segmentation_model.pt'))
-#         mask = (model(torch.tensor(data, dtype=torch.float32))[:, 1] >= 0).numpy().astype(np.uint8).reshape((Matrix.shape[0], Matrix.shape[1])) * 255
-#         temp = Image.fromarray(mask.astype(np.uint8))
-        # apply pixel-wise operations
+        
         if self.actions['brightness']:
             enhancer = ImageEnhance.Brightness(temp)
             temp = enhancer.enhance(self.actions['brightness'])

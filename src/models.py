@@ -43,7 +43,7 @@ def classificator(graph):
     for p in sorted_pairs:
         class_indicator[p[0]-1] = p[1] if np.isinf(class_indicator[p[0]-1]) else class_indicator[p[0]-1] + p[1]
 
-    print(np.argmin(class_indicator))
+    return np.argmin(class_indicator)
 
 
 def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:

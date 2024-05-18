@@ -18,9 +18,9 @@ class Engine:
                 if clear_thinning:
                     self.actions['thinning'] = False
                     self.actions['postproccess'] = False
+                    self.class_detected = None
                 self.refresh()
             return inner
-        
         return __decorator__
 
     def __whipe_dict(self):
@@ -42,18 +42,10 @@ class Engine:
             'erosion_after':None
         }
 
-        self.min_contour_len = 500
-        self.contours_detected = None
-        self.triangle_contours = None
-        self.convexes = None
-
     def __init__(self):
-        self.kernel = [] #    !!!!!!!!!!!!!!!!!!!
-        self.index_kernel = 0
-
-
         self.img = None
         self.modified = None
+        self.class_detected = None
 
         self.refresh_actions = []
         self.reset_actions = []
@@ -61,20 +53,24 @@ class Engine:
         self.__whipe_dict()
 
     def refresh(self):
-        for act in self.refresh_actions:
+        for act in [a for a, bf in self.refresh_actions if bf]:
+            act()
+        for act in [a for a, bf in self.refresh_actions if not bf]:
             act()
     
     def reset(self):
-        for act in self.reset_actions:
+        for act in [a for a, bf in self.reset_actions if bf]:
+            act()
+        for act in [a for a, bf in self.reset_actions if not bf]:
             act()
         
         self.__whipe_dict()
 
-    def add_refresh_action(self, action):
-        self.refresh_actions.append(action)
+    def add_refresh_action(self, action, being_first=False):
+        self.refresh_actions.append((action, being_first))
 
-    def add_reset_action(self, action):
-        self.reset_actions.append(action)
+    def add_reset_action(self, action, being_first=False):
+        self.reset_actions.append((action, being_first))
 
     def upload_picture(self, path):
         self.img = Image.open(path).copy()
@@ -110,9 +106,8 @@ class Engine:
         Matrix[..., 2] *= self.actions['color_enhancements'][2]
         temp = Image.fromarray(Matrix.astype(np.uint8))
 
-
         return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
-        
+
     
     def get_modified_pixmap(self):
         temp = self.img
@@ -149,7 +144,7 @@ class Engine:
         temp = Image.fromarray(temp.astype(np.uint8))
 
 
-        # applying porphological operations
+        # applying morphological operations
         if self.actions['opening_before'] is not None:
             Matrix = np.array(temp).astype(float)
             temp = cv.morphologyEx(
@@ -199,13 +194,16 @@ class Engine:
             Matrix = np.array(temp).astype(np.uint8)
             result_canvas, connectivity = get_graph(Matrix.copy())
 
-            classificator(connectivity)
+            self.class_detected = classificator(connectivity)
 
             temp = Image.fromarray(result_canvas.astype(np.uint8) + Matrix.astype(np.uint8))
 
         self.modified = temp.copy()
-        return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
 
+        return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
+    
+    def get_class_detected(self):
+        return self.class_detected
 
     @__refresher__(True)
     def change_brightness(self, brightness):
@@ -298,7 +296,6 @@ class Engine:
         kernel = np.ones((dilation, dilation), np.uint8)
         self.actions['dilation'] = kernel
 
-    
     @__refresher__(False)
     def thinning(self, val):
         self.actions['thinning'] = True
@@ -306,8 +303,3 @@ class Engine:
     @__refresher__(False)
     def postproccessing(self, val):
         self.actions['postproccess'] = True if self.actions['thinning'] else False
-
-
-    @__refresher__(True)
-    def temp_set_range(self, xy):
-        self.kernel.append(xy)

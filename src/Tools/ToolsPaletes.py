@@ -22,6 +22,7 @@ class ToolsPaletes(QWidget):
         apply_postproccessing.clicked.connect(self.engine.postproccessing)
 
         self.class_detected_label = QLabel('Класс: None')
+        self.class_detected_label .setStyleSheet("font-size: 18pt;")
 
         layout.addWidget(tlbx)
         layout.addWidget(apply_thinning)

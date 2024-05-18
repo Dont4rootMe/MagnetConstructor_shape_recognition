@@ -4,6 +4,7 @@ from itertools import combinations
 
 from knn import CLASSES
 
+
 def get_biggest_quantile_singulars(arr, quant=0.8):
     sum_norm = arr.sum()
     sorted_arr = np.sort(arr)
@@ -12,8 +13,10 @@ def get_biggest_quantile_singulars(arr, quant=0.8):
     indexes_needed = percent_income >= (1 - quant)
     return sorted_arr[indexes_needed]
 
+
 def norm_vector(v):
     return v / np.linalg.norm(v)
+
 
 def singular_metric(sng1, sng2):
     k1 = get_biggest_quantile_singulars(np.array(sng1))
@@ -37,23 +40,24 @@ def classificator(graph):
     Laplasian = D - connections
     singulars = np.linalg.eigh(Laplasian)[0]
 
-    pairs = [(cls, singular_metric(singulars, ref_sngl)) for cls, ref_sngl in CLASSES]  
-    sorted_pairs = sorted(pairs, key=lambda p: p[1])[::-1][:5]
-    class_indicator = np.full((4), np.inf)
+    pairs = [(cls, singular_metric(singulars, ref_sngl), i)
+             for i, (cls, ref_sngl) in enumerate(CLASSES)]
+    sorted_pairs = sorted(pairs, key=lambda p: p[1])[:5]
+    class_indicator = np.zeros((4))
     for p in sorted_pairs:
-        class_indicator[p[0]-1] = p[1] if np.isinf(class_indicator[p[0]-1]) else class_indicator[p[0]-1] + p[1]
-
-    return np.argmin(class_indicator)
+        class_indicator[p[0]-1] = class_indicator[p[0]-1] + np.exp(-p[1])
+    return np.argmax(class_indicator) + 1
 
 
 def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:
-    local_curve_kernel = np.ones((15, 15)) 
+    local_curve_kernel = np.ones((15, 15))
     local_curve_kernel[1:-1, 1:-1] = 0
     skeleton = np.where(Matrix[15:-15, 15:-15] > 0)
 
     skeleton_base = []
     for idx, idy in np.stack(skeleton, axis=-1) + 15:
-        point_local = np.stack(np.where(Matrix[idx-7:idx+8, idy-7:idy+8] * local_curve_kernel > 0), axis=-1)
+        point_local = np.stack(
+            np.where(Matrix[idx-7:idx+8, idy-7:idy+8] * local_curve_kernel > 0), axis=-1)
         if len(point_local) != 2:
             skeleton_base.append((idx, idy))
             continue
@@ -68,7 +72,6 @@ def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:
 
         if angle < 5 * np.pi / 6:
             skeleton_base.append((idx, idy))
-
 
     point_canvas = np.zeros_like(Matrix)
     for idx, idy in skeleton_base:
@@ -101,8 +104,10 @@ def get_graph(Matrix: np.array) -> tuple[np.array, dict[dict[int, int], float]]:
             cv.circle(mask_over_all_other_points, points[i], 30, 255, -1)
         canvas_without_other_dots[mask_over_all_other_points > 0] = 0
 
-        _, labels, _, _ = cv.connectedComponentsWithStats(canvas_without_other_dots)
-        connectivity[(a_index, b_index)] = np.linalg.norm(a - b) if labels[a[1], a[0]] == labels[b[1], b[0]] else 0
+        _, labels, _, _ = cv.connectedComponentsWithStats(
+            canvas_without_other_dots)
+        connectivity[(a_index, b_index)] = np.linalg.norm(
+            a - b) if labels[a[1], a[0]] == labels[b[1], b[0]] else 0
 
     result_canvas = Matrix.copy()
     for key, value in connectivity.items():

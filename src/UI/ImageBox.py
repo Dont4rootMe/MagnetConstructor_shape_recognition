@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import QSize
 
+
 class ImageBoxAbstract(QLabel):
     def __init__(self, topWidget, engine):
         super().__init__(topWidget)
@@ -13,6 +14,7 @@ class ImageBoxAbstract(QLabel):
 
         self.index = []
 
+
 class OriginalImage(ImageBoxAbstract):
     def __init__(self, topWidget, engine):
         super().__init__(topWidget, engine)
@@ -23,7 +25,8 @@ class OriginalImage(ImageBoxAbstract):
 
     def actionOnRefreshReset(self):
         return self.update_pic
-    
+
+
 class ModifiedImage(ImageBoxAbstract):
     def __init__(self, topWidget, engine):
         super().__init__(topWidget, engine)

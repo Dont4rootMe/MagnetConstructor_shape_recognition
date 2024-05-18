@@ -32,7 +32,7 @@ class CVtools(QWidget):
             self.layout.addWidget(self.slider)
 
             self.setLayout(self.layout)
-        
+
         def clear_morph(self):
             self.slider.setValue(0)
 
@@ -40,12 +40,17 @@ class CVtools(QWidget):
         super().__init__(topModel)
         self.engine = engine
 
-        self.opening_before_tool  = self.__morph_tool(self, self.engine.opening_before_change)
-        self.erosion_before_tool  = self.__morph_tool(self, self.engine.erosion_before_change)
-        self.closing_tool  = self.__morph_tool(self, self.engine.closing_change)
-        self.dilation_tool = self.__morph_tool(self, self.engine.dilation_change)
-        self.opening_after_tool  = self.__morph_tool(self, self.engine.opening_after_change)
-        self.erosion_after_tool  = self.__morph_tool(self, self.engine.erosion_after_change)
+        self.opening_before_tool = self.__morph_tool(
+            self, self.engine.opening_before_change)
+        self.erosion_before_tool = self.__morph_tool(
+            self, self.engine.erosion_before_change)
+        self.closing_tool = self.__morph_tool(self, self.engine.closing_change)
+        self.dilation_tool = self.__morph_tool(
+            self, self.engine.dilation_change)
+        self.opening_after_tool = self.__morph_tool(
+            self, self.engine.opening_after_change)
+        self.erosion_after_tool = self.__morph_tool(
+            self, self.engine.erosion_after_change)
 
         self.layout = QFormLayout()
         self.layout.addRow('Opening before: ', self.opening_before_tool)
@@ -65,4 +70,3 @@ class CVtools(QWidget):
         self.dilation_tool.clear_morph()
         self.opening_after_tool.clear_morph()
         self.erosion_after_tool.clear_morph()
-

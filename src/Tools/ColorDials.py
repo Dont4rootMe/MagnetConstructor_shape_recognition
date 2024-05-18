@@ -74,7 +74,7 @@ class ColorDials(QWidget):
         self.layout_binarize = QHBoxLayout()
         self.use_binarize = QLabel('Binarize: ')
         self.layout_binarize.addWidget(self.use_binarize)
-        
+
         self.binarize_slider = QSlider(Qt.Orientation.Horizontal)
         self.binarize_slider.setRange(1, 255)
         self.binarize_slider.setValue(128)

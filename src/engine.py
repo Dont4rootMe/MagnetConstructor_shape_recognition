@@ -10,6 +10,7 @@ from itertools import combinations
 
 from models import get_graph, classificator
 
+
 class Engine:
     def __refresher__(clear_thinning=True):
         def __decorator__(func):
@@ -39,7 +40,7 @@ class Engine:
             'closing': None,
             'dilation': None,
             'opening_after': None,
-            'erosion_after':None
+            'erosion_after': None
         }
 
     def __init__(self):
@@ -57,13 +58,13 @@ class Engine:
             act()
         for act in [a for a, bf in self.refresh_actions if not bf]:
             act()
-    
+
     def reset(self):
         for act in [a for a, bf in self.reset_actions if bf]:
             act()
         for act in [a for a, bf in self.reset_actions if not bf]:
             act()
-        
+
         self.__whipe_dict()
 
     def add_refresh_action(self, action, being_first=False):
@@ -79,13 +80,13 @@ class Engine:
 
     def original_pixmap_exist(self):
         return self.img is not None
-    
+
     def modified_pixmap_exist(self):
         return self.modified is not None
 
     def get_original_pixmap(self):
         temp = self.img
-        
+
         if self.actions['brightness']:
             enhancer = ImageEnhance.Brightness(temp)
             temp = enhancer.enhance(self.actions['brightness'])
@@ -108,7 +109,6 @@ class Engine:
 
         return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
 
-    
     def get_modified_pixmap(self):
         temp = self.img
 
@@ -143,7 +143,6 @@ class Engine:
             temp = 255 - temp
         temp = Image.fromarray(temp.astype(np.uint8))
 
-
         # applying morphological operations
         if self.actions['opening_before'] is not None:
             Matrix = np.array(temp).astype(float)
@@ -153,7 +152,8 @@ class Engine:
 
         if self.actions['erosion_before'] is not None:
             Matrix = np.array(temp).astype(float)
-            temp = cv.erode(Matrix, self.actions['erosion_before'], iterations=1)
+            temp = cv.erode(
+                Matrix, self.actions['erosion_before'], iterations=1)
             temp = Image.fromarray(temp.astype(np.uint8))
 
         if self.actions['closing'] is not None:
@@ -175,16 +175,19 @@ class Engine:
 
         if self.actions['erosion_after'] is not None:
             Matrix = np.array(temp).astype(float)
-            temp = cv.erode(Matrix, self.actions['erosion_after'], iterations=1)
+            temp = cv.erode(
+                Matrix, self.actions['erosion_after'], iterations=1)
             temp = Image.fromarray(temp.astype(np.uint8))
 
         if self.actions['thinning']:
             Matrix = np.array(temp).astype(np.uint8)
-            temp = cv.ximgproc.thinning(Matrix, thinningType=cv.ximgproc.THINNING_GUOHALL)
+            temp = cv.ximgproc.thinning(
+                Matrix, thinningType=cv.ximgproc.THINNING_GUOHALL)
 
             # save the only largest skeleton
             _, labels, _, _ = cv.connectedComponentsWithStats(temp)
-            largest_component = np.argmax(np.unique(labels, return_counts=True)[1][1:]) + 1
+            largest_component = np.argmax(
+                np.unique(labels, return_counts=True)[1][1:]) + 1
             deletion_mask = labels == largest_component
             temp *= deletion_mask
 
@@ -196,12 +199,13 @@ class Engine:
 
             self.class_detected = classificator(connectivity)
 
-            temp = Image.fromarray(result_canvas.astype(np.uint8) + Matrix.astype(np.uint8))
+            temp = Image.fromarray(result_canvas.astype(
+                np.uint8) + Matrix.astype(np.uint8))
 
         self.modified = temp.copy()
 
         return QPixmap.fromImage(ImageQt.ImageQt(temp).copy())
-    
+
     def get_class_detected(self):
         return self.class_detected
 
@@ -279,7 +283,7 @@ class Engine:
             return
         kernel = np.ones((erosion, erosion), np.uint8)
         self.actions['erosion_after'] = kernel
-    
+
     @__refresher__(True)
     def closing_change(self, closing):
         if closing == 0:

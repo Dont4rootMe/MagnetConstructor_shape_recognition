@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
 
+
 class UploadRefreshButtons(QWidget):
     def __init__(self, topWidget, engine):
         super().__init__(topWidget)
@@ -25,4 +26,3 @@ class UploadRefreshButtons(QWidget):
         file_input = QFileDialog()
         if file_input.exec():
             self.engine.upload_picture(file_input.selectedFiles()[0])
-

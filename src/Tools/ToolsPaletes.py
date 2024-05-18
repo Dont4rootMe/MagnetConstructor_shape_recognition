@@ -22,7 +22,6 @@ class ToolsPaletes(QWidget):
         apply_postproccessing.clicked.connect(self.engine.postproccessing)
 
         self.class_detected_label = QLabel('Класс: None')
-        
 
         layout.addWidget(tlbx)
         layout.addWidget(apply_thinning)
@@ -37,4 +36,5 @@ class ToolsPaletes(QWidget):
         self.engine.add_reset_action(self.check_on_class_detected)
 
     def check_on_class_detected(self):
-        self.class_detected_label.setText(f'Класс: {self.engine.get_class_detected()}')
+        self.class_detected_label.setText(
+            f'Класс: {self.engine.get_class_detected()}')

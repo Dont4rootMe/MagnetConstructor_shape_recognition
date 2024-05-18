@@ -3,6 +3,7 @@ from PyQt6.QtCore import QSize
 
 from UI.ImageBox import OriginalImage, ModifiedImage
 
+
 class ImagePair(QWidget):
     def __init__(self, topWidget, engine):
         super().__init__(topWidget)

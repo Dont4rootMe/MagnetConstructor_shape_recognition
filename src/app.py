@@ -7,6 +7,7 @@ from UI.ImagePair import ImagePair
 from UI.UploadRefreshButtons import UploadRefreshButtons
 from Tools.ToolsPaletes import ToolsPaletes
 
+
 class MainFrame(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
